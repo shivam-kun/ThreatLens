@@ -1,0 +1,9 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.ipynb_checkpoints
+analysis.ipynb
+temp.txt
+threat_feed.db
