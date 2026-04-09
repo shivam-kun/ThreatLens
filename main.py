@@ -4,7 +4,7 @@ import plotly.graph_objs as go
 import plotly.express as px
 from joblib import dump, load
 import subprocess
-from tensorflow.keras.models import load_model
+
 import numpy as np
 import sqlite3
 import sys
@@ -132,6 +132,46 @@ def graph():
     else:
         pass
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def relu(x):
+    return np.maximum(0, x)
+
+def lstm_predict_numpy(X, weights):
+    # X shape: (timesteps, features)
+    # weights[0]: kernel, weights[1]: recurrent_kernel, weights[2]: bias
+    # weights[3]: dense_kernel, weights[4]: dense_bias
+    
+    W = weights[0]
+    U = weights[1]
+    b = weights[2]
+    W_dense = weights[3]
+    b_dense = weights[4]
+    
+    units = U.shape[0]
+    h = np.zeros(units)
+    c = np.zeros(units)
+    
+    # Keras LSTM weight splitting: i, f, c, o
+    W_i, W_f, W_c, W_o = np.split(W, 4, axis=1)
+    U_i, U_f, U_c, U_o = np.split(U, 4, axis=1)
+    b_i, b_f, b_c, b_o = np.split(b, 4)
+    
+    for x_t in X:
+        # gates
+        i = sigmoid(np.dot(x_t, W_i) + np.dot(h, U_i) + b_i)
+        f = sigmoid(np.dot(x_t, W_f) + np.dot(h, U_f) + b_f)
+        o = sigmoid(np.dot(x_t, W_o) + np.dot(h, U_o) + b_o)
+        
+        # user used activation='relu' in training script
+        c_tilde = relu(np.dot(x_t, W_c) + np.dot(h, U_c) + b_c)
+        
+        c = f * c + i * c_tilde
+        h = o * relu(c) # recurrent activation is typically sigmoid, but user's activation=relu applies to state
+        
+    return np.dot(h, W_dense) + b_dense
+
 def find_max_key(value: int, all_years_predictions: dict) -> str:
     for key, val in all_years_predictions.items():
         if val == value:
@@ -230,7 +270,8 @@ def lstm_forecast():
         try:
             # All of your existing POST request logic goes here...
             # Load model, scaler, make predictions, etc.
-            model = load_model('lstm_model.h5', compile=False)
+            # Use Numpy instead of TensorFlow/TFLite
+            lstm_weights = load('lstm_weights.joblib')
             scaler = load('lstm_scaler.joblib')
             
             years_to_forecast = int(request.form.get('years'))
@@ -244,8 +285,11 @@ def lstm_forecast():
             
             forecast_scaled = []
             for _ in range(years_to_forecast):
-                input_sequence = np.array(last_sequence[-n_steps:]).reshape((1, n_steps, 1))
-                predicted_point = model.predict(input_sequence)[0]
+                input_sequence = np.array(last_sequence[-n_steps:]).reshape((n_steps, 1))
+                
+                # Manual Numpy Inference
+                predicted_point = lstm_predict_numpy(input_sequence, lstm_weights)
+                
                 forecast_scaled.append(predicted_point[0])
                 last_sequence.append(predicted_point[0])
 

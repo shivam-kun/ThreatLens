@@ -2,7 +2,6 @@ flask
 pandas
 plotly
 joblib
-tensorflow-cpu
 numpy
 scikit-learn
 xgboost
