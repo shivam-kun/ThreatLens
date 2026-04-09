@@ -1,165 +1,108 @@
-# ThreatLens: Cybercrime Forecasting & Analysis
-
-A machine learning framework for predicting and analyzing cybercrime trends using ensemble methods and multi-source data integration.
-
----
-
-## Overview
-
-ThreatLens applies ensemble learning techniques to forecast cybercrime rates across different geographical regions and time periods. The project combines historical crime data, demographic information, and internet usage statistics to build predictive models that help understand evolving cyber threat landscapes.
+<div align="center">
+  <h1>🛡️ ThreatLens</h1>
+  <p><strong>Advanced Cybercrime Forecasting & Intelligence Platform</strong></p>
+  <p>
+    An end-to-end framework integrating machine learning models, time-series forecasting, and an active early warning system to predict and analyze cybercrime trends.
+  </p>
+</div>
 
 ---
 
-## Features
+## 📖 Overview
 
-- **Predictive Modeling**: Forecasts cybercrime rates using state-level demographic and technology adoption data
-- **Multi-Model Comparison**: Benchmarks performance across five ensemble learning algorithms
-- **Category-Specific Analysis**: Breaks down trends by crime type (identity theft, online fraud, cyberstalking, etc.)
-- **Temporal Pattern Recognition**: Tracks year-over-year changes from 2015 to 2020
-- **Quantitative Evaluation**: Measures model performance using multiple regression metrics
+ThreatLens is a comprehensive platform designed to forecast cybercrime rates, track emerging threats, and analyze historical distribution across different geographical regions. By combining demographic records, technology adoption metrics, and real-time threat intelligence scraping, the platform offers an interactive web dashboard for visualizing and predicting the evolving landscape of digital crime.
 
----
+## ✨ Core Features
 
-## Models Implemented
+- **Interactive Web Dashboard**: A full-featured Flask web application providing interactive tools for spatial and temporal data analysis, utilizing Plotly for dynamic charts and visualizations.
+- **Ensemble Predictive Modeling**: Forecasts future state-level cybercrime rates using a unified pre-trained machine learning model (`joblib`), taking into account internet penetration, broadband adoption, and population metrics.
+- **Deep Learning Time-Series**: Employs an LSTM (Long Short-Term Memory) neural network built with TensorFlow/Keras to conduct accurate, successive multi-year forecasting based on historical sequences.
+- **AI Early Warning System (AEWS)**: An automated background monitor (`aews_monitor.py`) leveraging Selenium Stealth to actively scrape threat intelligence from security blogs (e.g., BleepingComputer), scoring threats and storing alerts in a local SQLite database.
+- **Comparative Analysis**: Tools to dissect specific crime categories (identity theft, online banking fraud, cyberstalking) and compare trends across states year-over-year.
 
-| Model | Use Case |
-|-------|----------|
-| Random Forest | Baseline ensemble predictor |
-| Gradient Boosting | Sequential error correction |
-| AdaBoost | Adaptive weak learner boosting |
-| Bagging | Variance reduction through bootstrap aggregation |
-| XGBoost | Regularized gradient boosting |
+## 🛠️ Technology Stack
 
----
+- **Backend & API**: Python 3, Flask
+- **Machine Learning & AI**: scikit-learn, TensorFlow/Keras (LSTM), XGBoost
+- **Data Processing**: Pandas, NumPy
+- **Visualizations**: Plotly, Google Charts
+- **Scraping & Intelligence**: Selenium, webdriver-manager, SQLite3
+- **Deployment**: Configured for serverless deployment on Vercel (`vercel.json`)
 
-## Performance Metrics
-
-Models are evaluated using:
-
-- **R² Score**: Variance explained by the model
-- **MSE**: Mean Squared Error
-- **MAE**: Mean Absolute Error  
-- **RMSE**: Root Mean Squared Error
-
----
-
-## Data Sources
-
-The analysis integrates three primary datasets:
-
-**1. Demographic & Technology Dataset**
-- State-level population figures
-- Internet and broadband subscription rates
-- Reported cybercrime incidents
-
-**2. Crime Category Dataset**
-- Identity theft cases
-- Cyberstalking incidents
-- Online banking fraud
-- Additional category breakdowns
-
-**3. Temporal Trends Dataset**
-- State-wise annual data (2015-2020)
-- Used for longitudinal analysis
-
----
-
-## Technology Stack
-
-```
-Python 3.x
-├── scikit-learn (model training & evaluation)
-├── XGBoost (gradient boosting)
-├── pandas & NumPy (data manipulation)
-├── matplotlib & seaborn (visualization)
-└── Jupyter Notebook (development environment)
-```
-
----
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
+Ensure you have Python 3.8+ installed. The project runs in a standard virtual environment. Note that running the AEWS monitor requires Google Chrome to be installed.
+
+### Local Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/shivam-kun/ThreatLens.git
+   cd ThreatLens
+   ```
+
+2. **Create and activate a virtual environment (Recommended):**
+   ```bash
+   # Windows
+   python -m venv venv
+   venv\Scripts\activate
+
+   # macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Launch the Web Application:**
+   ```bash
+   python main.py
+   ```
+   *The application will now be available at `http://127.0.0.1:5000`.*
+
+### Running the Early Warning System (Optional)
+
+To start the continuous background threat monitor, open a separate terminal in the project directory and run:
+
 ```bash
-Python 3.7+
-pip
+python aews_monitor.py
 ```
 
-### Installation
+## ☁️ Deployment
 
-```bash
-# Clone repository
-git clone https://github.com/shivam-kun/ThreatLens.git
-cd ThreatLens
+This project includes a `vercel.json` configuration file, making it ready for instant, serverless deployment on Vercel. 
 
-# Install dependencies
-pip install -r requirements.txt
+1. Push your code to a GitHub repository.
+2. Import the repository into your Vercel account.
+3. **Important**: Set the **Root Directory** to `ThreatLens` within Vercel's project settings to ensure models and datasets are found correctly.
+4. Deploy the application.
 
-# Run analysis pipeline
-python generate.py
+## 📊 Repository Structure
+
+```
+ThreatLens/
+├── aews_monitor.py            # Headless threat intelligence scraper
+├── main.py                    # Main Flask web application server
+├── datasets/                  # Historical and forecast CSV data
+├── models/                    # Model architecture scripts
+├── static/ & templates/       # Web styling, frontend JS, and HTML views
+├── lstm_model.h5              # Pre-trained deep learning time-series model
+├── unified_model_data.joblib  # Pre-trained ensemble machine learning model
+├── requirements.txt           # Python package dependencies
+└── vercel.json                # Vercel serverless configuration
 ```
 
----
+## 📜 License
 
-## Model Inputs & Outputs
-
-**Input Features:**
-- Year
-- State/Region
-- Population density
-- Internet penetration rate
-- Broadband subscription data
-
-**Output:**
-- Predicted cybercrime rate
-- Model confidence scores
-- Feature importance rankings
+This project is open-source and available under the terms of the MIT License.
 
 ---
 
-## Key Findings
-
-1. **Model Performance**: Ensemble methods consistently outperform single-classifier approaches
-2. **Correlation Trends**: Strong positive relationship between internet adoption rates and cybercrime incidence
-3. **Category Distribution**: Financial fraud and identity theft account for the majority of reported cases
-4. **Regional Variations**: Significant geographical disparities in crime rates even after controlling for population
-
----
-
-## Roadmap
-
-- [ ] Integrate real-time data feeds
-- [ ] Develop interactive web dashboard
-- [ ] Implement deep learning models (LSTM, Transformer architectures)
-- [ ] Add geospatial visualization layer
-- [ ] Expand dataset to include 2021-2024
-
----
-
-## Contributing
-
-Contributions are welcome. Please open an issue first to discuss proposed changes.
-
----
-
-## License
-
-This project is available under the MIT License.
-
----
-
-## Author
-
-**Shivam Kundu**  
-[GitHub](https://github.com/shivam-kun) • [LinkedIn](#)
-
----
-
-## Acknowledgments
-
-Data sources and references used in this analysis are documented in the `/docs` folder.
-
----
-
-*For questions or collaboration opportunities, please open an issue or reach out directly.*
+<div align="center">
+  <b>Developed with ❤️ for cybersecurity intelligence.</b>
+</div>
